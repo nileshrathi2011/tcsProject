@@ -5,17 +5,13 @@
  */
 package app.main;
 
-import app.buisness.Employee;
-import app.buisness.EmployeeStatus;
+import app.buisness.Employer;
 import app.data.ConnectionPool;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -28,7 +24,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author nilesh rathi
  */
-public class EmployeeProfile extends HttpServlet {
+public class EditEmployer extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,39 +38,47 @@ public class EmployeeProfile extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        Employee emp = (Employee)session.getAttribute("emp");
-        int sid=emp.getId();
-        String url="/index.html";
-        ConnectionPool pool=ConnectionPool.getInstance();
-        Connection connection = pool.getConnection();
-        
-        String query ="select employer.company_name , status.status from employer , status where status.emp_id = ? and status.cmp_id=employer.id ";
-        System.out.println("Employee profile me yaha tak.....");
-        System.out.println("Employee Email = " +emp.getEmail()+ " Employee Id= "+ emp.getId());
+        Employer employer = (Employer) session.getAttribute("employer");
+         String name = request.getParameter("name");
+                String CompanyName = request.getParameter("cmpname");
+                String email = request.getParameter("email");
+                String companyWeb = request.getParameter("cmpweb");
+                String jobProfile = request.getParameter("jp");
+                String skills = request.getParameter("skills");
+                String password = request.getParameter("pwd");
+                String cnfPassword = request.getParameter("cnfpwd");
+                String message="";
+                String url="/editEmployer.jsp";
+                password=password.trim();
+                
+                ConnectionPool pool=ConnectionPool.getInstance();
+                     Connection connection = pool.getConnection();
+                     String query="UPDATE  employer SET website=?, email=?, name=?, company_name=?, job_profile=?, skills_required=?, password=? WHERE id=?";
         try {
-            PreparedStatement ps= connection.prepareStatement(query);
-            ps.setInt(1,emp.getId());
-            ResultSet rs= ps.executeQuery();
-            List<EmployeeStatus> empStatList= new ArrayList<EmployeeStatus>();
-            while(rs.next())
-            {
-                EmployeeStatus empStat = new EmployeeStatus();
-                empStat.setCompanyName(rs.getString("company_name"));
-                empStat.setStatus(rs.getString("status"));
-                empStatList.add(empStat);
-            } 
-            session.setAttribute("empStatList", empStatList);
-            url="/employeeprofile.jsp";
-            
+            PreparedStatement ps=connection.prepareStatement(query);
+            ps.setString(1,companyWeb );
+            ps.setString(2,email);
+            ps.setString(3, name);
+            ps.setString(4, CompanyName);
+            ps.setString(5,jobProfile );
+            ps.setString(6, skills );
+            ps.setString(7, password);
+            ps.setInt(8,employer.getId());
+            ps.executeUpdate();
+            Employer employerUpdated = new Employer(employer.getId(),name,CompanyName,email, companyWeb, jobProfile,skills,password);
+            session.setAttribute("employer",employerUpdated);
+            url="/EmployerProfile";
         } catch (SQLException ex) {
-            Logger.getLogger(EmployeeProfile.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EditEmployer.class.getName()).log(Level.SEVERE, null, ex);
+             message="Sorry! Something went wrong with the server .. please try again";
+                        request.setAttribute("message", message);
         }
-              
-           pool.freeConnection(connection);
-         getServletContext()
+        
+        pool.freeConnection(connection);
+         request.setAttribute("message", message);
+       getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
-       
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

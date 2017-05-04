@@ -6,16 +6,14 @@
 package app.main;
 
 import app.buisness.Employee;
-import app.buisness.EmployeeStatus;
 import app.data.ConnectionPool;
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -28,7 +26,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author nilesh rathi
  */
-public class EmployeeProfile extends HttpServlet {
+public class ApplyForPosition extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,37 +39,37 @@ public class EmployeeProfile extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Employee emp = (Employee)session.getAttribute("emp");
-        int sid=emp.getId();
-        String url="/index.html";
-        ConnectionPool pool=ConnectionPool.getInstance();
-        Connection connection = pool.getConnection();
-        
-        String query ="select employer.company_name , status.status from employer , status where status.emp_id = ? and status.cmp_id=employer.id ";
-        System.out.println("Employee profile me yaha tak.....");
-        System.out.println("Employee Email = " +emp.getEmail()+ " Employee Id= "+ emp.getId());
-        try {
-            PreparedStatement ps= connection.prepareStatement(query);
-            ps.setInt(1,emp.getId());
-            ResultSet rs= ps.executeQuery();
-            List<EmployeeStatus> empStatList= new ArrayList<EmployeeStatus>();
-            while(rs.next())
+            HttpSession session = request.getSession();
+            Employee emp = (Employee) session.getAttribute("emp");
+            String message=" ";
+            String url="/OpeningsServlet";
+            ConnectionPool pool=ConnectionPool.getInstance();
+            Connection connection = pool.getConnection();
+            if(emp!=null)
             {
-                EmployeeStatus empStat = new EmployeeStatus();
-                empStat.setCompanyName(rs.getString("company_name"));
-                empStat.setStatus(rs.getString("status"));
-                empStatList.add(empStat);
-            } 
-            session.setAttribute("empStatList", empStatList);
-            url="/employeeprofile.jsp";
+                //employee already logged in
+                int emp_id = emp.getId();
+                int cmp_id = Integer.parseInt(request.getParameter("employerId"));
+                String query="insert into status values(?,?,'Applied')";
+                try {
+                    PreparedStatement ps= connection.prepareStatement(query);
+                    ps.setInt(1, emp_id);
+                    ps.setInt(2, cmp_id);
+                      ps.executeUpdate();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ApplyForPosition.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+            else
+            {
+                //send a message to log in first
+                message="Either Login Or Register First";
+                request.setAttribute("message", message);
+            }
             
-        } catch (SQLException ex) {
-            Logger.getLogger(EmployeeProfile.class.getName()).log(Level.SEVERE, null, ex);
-        }
-              
-           pool.freeConnection(connection);
-         getServletContext()
+             pool.freeConnection(connection);
+        getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
        

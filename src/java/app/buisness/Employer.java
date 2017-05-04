@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 public class Employer implements Serializable {
     
+    private int id;
     private String name;
     private String company;
     private String email;
@@ -29,6 +30,25 @@ public class Employer implements Serializable {
         this.profile = profile;
         this.skills = skills;
         this.password = password;
+    }
+
+    public Employer(int id, String name, String company, String email, String website, String profile, String skills, String password) {
+        this.id = id;
+        this.name = name;
+        this.company = company;
+        this.email = email;
+        this.website = website;
+        this.profile = profile;
+        this.skills = skills;
+        this.password = password;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Employer() {

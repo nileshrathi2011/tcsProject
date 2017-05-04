@@ -6,16 +6,12 @@
 package app.main;
 
 import app.buisness.Employee;
-import app.buisness.EmployeeStatus;
 import app.data.ConnectionPool;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -28,7 +24,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author nilesh rathi
  */
-public class EmployeeProfile extends HttpServlet {
+public class EditEmployee extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,40 +37,50 @@ public class EmployeeProfile extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+       
         HttpSession session = request.getSession();
-        Employee emp = (Employee)session.getAttribute("emp");
-        int sid=emp.getId();
-        String url="/index.html";
+        Employee employee = (Employee) session.getAttribute("emp");
+         String name = request.getParameter("name");
+       String dob= request.getParameter("dob");
+       String college = request.getParameter("clgname");
+       String email = request.getParameter("email");
+       String pass= request.getParameter("pwd");
+       String cnpass= request.getParameter("cnfpwd");
+       String resume = request.getParameter("upldrsm");
+       String message="";
+       //System.out.println("edit emplooyee me naam hai... "+ name);
+       pass=pass.trim();
+        String url="/editEmployee.jsp";
         ConnectionPool pool=ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
+        String query="UPDATE  employee SET name=?, email=?, dob=?, college=?, password=?, resume=? WHERE id=?";
         
-        String query ="select employer.company_name , status.status from employer , status where status.emp_id = ? and status.cmp_id=employer.id ";
-        System.out.println("Employee profile me yaha tak.....");
-        System.out.println("Employee Email = " +emp.getEmail()+ " Employee Id= "+ emp.getId());
         try {
             PreparedStatement ps= connection.prepareStatement(query);
-            ps.setInt(1,emp.getId());
-            ResultSet rs= ps.executeQuery();
-            List<EmployeeStatus> empStatList= new ArrayList<EmployeeStatus>();
-            while(rs.next())
-            {
-                EmployeeStatus empStat = new EmployeeStatus();
-                empStat.setCompanyName(rs.getString("company_name"));
-                empStat.setStatus(rs.getString("status"));
-                empStatList.add(empStat);
-            } 
-            session.setAttribute("empStatList", empStatList);
-            url="/employeeprofile.jsp";
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, dob);
+            ps.setString(4, college);
+            ps.setString(5, pass);
+            ps.setString(6, resume);
+            ps.setInt(7, employee.getId());
+            ps.executeUpdate();
+            Employee emp = new Employee(employee.getId() , name, dob, college,  email, pass ,resume);
+            session.setAttribute("emp", emp);
+            url="/EmployeeProfile";
             
         } catch (SQLException ex) {
-            Logger.getLogger(EmployeeProfile.class.getName()).log(Level.SEVERE, null, ex);
+            message="something went wrong please try again";
+            
+            Logger.getLogger(EditEmployee.class.getName()).log(Level.SEVERE, null, ex);
         }
-              
-           pool.freeConnection(connection);
-         getServletContext()
+        
+        pool.freeConnection(connection);
+        request.setAttribute("message", message);
+       getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
-       
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

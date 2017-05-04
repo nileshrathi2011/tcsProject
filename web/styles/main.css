@@ -4,6 +4,9 @@ body {
 	background: #eee !important;	
 }
 
+
+
+
 .wrapper {	
 	margin-top: 20px;
   margin-bottom: 50px;
@@ -81,4 +84,12 @@ body {
 }
 .wrapper_white_content_buttons {
     text-align: center;
+}
+
+table {
+        width: 75%;
+    max-width: 100%;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }

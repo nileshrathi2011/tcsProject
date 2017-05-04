@@ -5,17 +5,12 @@
  */
 package app.main;
 
-import app.buisness.Employee;
-import app.buisness.EmployeeStatus;
 import app.data.ConnectionPool;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -28,7 +23,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author nilesh rathi
  */
-public class EmployeeProfile extends HttpServlet {
+public class DeleteProfile extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,41 +36,50 @@ public class EmployeeProfile extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Employee emp = (Employee)session.getAttribute("emp");
-        int sid=emp.getId();
-        String url="/index.html";
+        HttpSession session =request.getSession();
+        String url="/AdminProfile";
+        String table= request.getParameter("table");
+        int id = Integer.parseInt(request.getParameter("id"));
         ConnectionPool pool=ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
+        String query="";
+        if(table.equals("employee"))
+            query = "delete from status where emp_id =?";
+        else if(table.equals("employer"))
+            query = "delete from status where cmp_id=?";
         
-        String query ="select employer.company_name , status.status from employer , status where status.emp_id = ? and status.cmp_id=employer.id ";
-        System.out.println("Employee profile me yaha tak.....");
-        System.out.println("Employee Email = " +emp.getEmail()+ " Employee Id= "+ emp.getId());
         try {
+           // String 
             PreparedStatement ps= connection.prepareStatement(query);
-            ps.setInt(1,emp.getId());
-            ResultSet rs= ps.executeQuery();
-            List<EmployeeStatus> empStatList= new ArrayList<EmployeeStatus>();
-            while(rs.next())
-            {
-                EmployeeStatus empStat = new EmployeeStatus();
-                empStat.setCompanyName(rs.getString("company_name"));
-                empStat.setStatus(rs.getString("status"));
-                empStatList.add(empStat);
-            } 
-            session.setAttribute("empStatList", empStatList);
-            url="/employeeprofile.jsp";
+            ps.setInt(1, id);
             
+            ps.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(EmployeeProfile.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeleteProfile.class.getName()).log(Level.SEVERE, null, ex);
         }
-              
-           pool.freeConnection(connection);
-         getServletContext()
+        
+         if(table.equals("employee"))
+            query = "delete from employee where id =?";
+        else if(table.equals("employer"))
+            query = "delete from employer where id=?";
+        
+        try {
+           
+            PreparedStatement ps= connection.prepareStatement(query);
+            
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DeleteProfile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+         pool.freeConnection(connection);
+        getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
-       
+        
     }
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

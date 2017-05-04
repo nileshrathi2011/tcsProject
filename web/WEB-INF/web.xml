@@ -16,6 +16,50 @@
         <servlet-name>EmployeeProfile</servlet-name>
         <servlet-class>app.main.EmployeeProfile</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RegistrationEmployer</servlet-name>
+        <servlet-class>app.main.RegistrationEmployer</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EmployerProfile</servlet-name>
+        <servlet-class>app.main.EmployerProfile</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ChangeStatus</servlet-name>
+        <servlet-class>app.main.ChangeStatus</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OpeningsServlet</servlet-name>
+        <servlet-class>app.main.OpeningsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ApplyForPosition</servlet-name>
+        <servlet-class>app.main.ApplyForPosition</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InvalidateSession</servlet-name>
+        <servlet-class>app.main.InvalidateSession</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminLogin</servlet-name>
+        <servlet-class>app.main.AdminLogin</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminProfile</servlet-name>
+        <servlet-class>app.main.AdminProfile</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteProfile</servlet-name>
+        <servlet-class>app.main.DeleteProfile</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditEmployee</servlet-name>
+        <servlet-class>app.main.EditEmployee</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditEmployer</servlet-name>
+        <servlet-class>app.main.EditEmployer</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -31,6 +75,50 @@
     <servlet-mapping>
         <servlet-name>EmployeeProfile</servlet-name>
         <url-pattern>/EmployeeProfile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegistrationEmployer</servlet-name>
+        <url-pattern>/RegistrationEmployer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EmployerProfile</servlet-name>
+        <url-pattern>/EmployerProfile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChangeStatus</servlet-name>
+        <url-pattern>/ChangeStatus</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OpeningsServlet</servlet-name>
+        <url-pattern>/OpeningsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ApplyForPosition</servlet-name>
+        <url-pattern>/ApplyForPosition</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InvalidateSession</servlet-name>
+        <url-pattern>/InvalidateSession</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminLogin</servlet-name>
+        <url-pattern>/AdminLogin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminProfile</servlet-name>
+        <url-pattern>/AdminProfile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteProfile</servlet-name>
+        <url-pattern>/DeleteProfile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditEmployee</servlet-name>
+        <url-pattern>/EditEmployee</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditEmployer</servlet-name>
+        <url-pattern>/EditEmployer</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Register As Student</title>
+  <title>Register As Employee</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -10,8 +10,7 @@
 </head>
 
 <body>
-    
-<div class="header">
+    <div class="header">
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -37,39 +36,42 @@
   </div>
 </nav>
 </div>
-    
+
 <div class="container">
-  <h2>Empoyee Registration</h2>
-  <p>${message}</p>
-  <br>
-  <form method="post" action="RegistrationEmployee">
+  <h2>Employer Registration</h2>
+   <p>${message}</p>
+  <form method="post" action="RegistrationEmployer">
     <div class="form-group">
-	<label for="name">Nam:</label>
-        <input type="name" class="form-control" value=${emp.name} name="name" placeholder="Name">
-    </div>
-	 <div class="form-group">
-	<label for="dob">DOB:</label>
-      <input type="dob" class="form-control" name="dob" value=${emp.dob} placeholder="DD/MM/YYYY">
+	<label for="name">Name:</label>
+      <input type="name" class="form-control" name="name" placeholder="Name">
     </div>
 	<div class="form-group">
-	<label for="college name">College Name:</label>
-      <input type="name" class="form-control" name="clgname" value=${emp.college} placeholder="College Name">
+	<label for="college name">Compony Name:</label>
+      <input type="name" class="form-control" name="cmpname" placeholder="Compony Name">
     </div>
     <div class="form-group">
 	<label for="email">Email:</label>
-        <input type="email" class="form-control" name="email" value=${emp.email} placeholder="Enter email">
+      <input type="email" class="form-control" name="email" placeholder="Enter Email">
     </div>
+	<div class="form-group">
+	<label for="compony website">Compony Website:</label>
+      <input type="url" class="form-control" name="cmpweb" placeholder="Compony Website">
+    </div>
+	<div class="form-group">
+	<label for="job profile">Job Profile:</label>
+      <input type="name" class="form-control" name="jp" placeholder="Job Profile">
+    </div>
+	<div class="form-group">
+	<label for="Skills Reuired">Skills Required</label>
+     <textarea class="form-control" row="10" name="skills"placeholder="Skills Required"></textarea>
+	 </div>
     <div class="form-group">
       <label for="pwd">Password:</label>
-      <input type="password" class="form-control" name="pwd" value=${emp.password} placeholder="Enter password">
+      <input type="password" class="form-control" name="pwd" placeholder="Enter password">
     </div>
 	<div class="form-group">
       <label for="pwd">Confirm Password:</label>
-      <input type="password" class="form-control" name="cnfpwd" value=${emp.password} placeholder="Confirm password">
-    </div>
-	<div class="form-group">
-      <label for="resume">Upload Resume:</label>
-      <input type="url" class="form-control" name="upldrsm" value=${emp.resume} placeholder="Upload Resume">
+      <input type="password" class="form-control" name="cnfpwd" placeholder="Confirm password">
     </div>
     <button type="submit" class="btn btn-success">Submit</button>
   </form>

@@ -6,6 +6,7 @@
 package app.main;
 
 import app.buisness.Employee;
+import app.buisness.Employer;
 import app.data.ConnectionPool;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +14,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -21,13 +23,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import static org.eclipse.jdt.internal.compiler.parser.Parser.name;
 
 /**
  *
  * @author nilesh rathi
  */
-public class RegistrationEmployee extends HttpServlet {
+public class OpeningsServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,71 +41,67 @@ public class RegistrationEmployee extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       String name = request.getParameter("name");
-       String dob= request.getParameter("dob");
-       String college = request.getParameter("clgname");
-       String email = request.getParameter("email");
-       String pass= request.getParameter("pwd");
-       String cnpass= request.getParameter("cnfpwd");
-       String resume = request.getParameter("upldrsm");
-       String message="";
-       String url="/registration.jsp";
-       pass=pass.trim();
-       cnpass=cnpass.trim();
-       
-       if(!pass.equals(cnpass))
-       {
-        message="password does  not match please try again";
-        request.setAttribute("message",message);
         
+      HttpSession session = request.getSession(false);
+       Employee emp = (Employee) session.getAttribute("emp");
+       String url="/openings.jsp";
+       String message= request.getParameter("message");
+               if(message!=null)
+               {
+                   request.setAttribute("message", message);
+               }
+       ConnectionPool pool=ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+       if(emp!=null)
+       {
+           //emp already   logged in..
+           int emp_id=emp.getId();
+           
+           String query="select * from employer where id not in ( select cmp_id from status where status.emp_id=?)";
+           try {
+               System.out.println("Empoyee id is "+ emp.getId());
+               PreparedStatement ps= connection.prepareStatement(query);
+               ps.setInt(1, emp_id);
+                ResultSet rs= ps.executeQuery();
+                List<Employer> employer_list= new ArrayList<Employer>();
+                while(rs.next())
+                {
+                 Employer employer = new  Employer(rs.getInt("id"), rs.getString("name"), rs.getString("company_name"), rs.getString("email"), rs.getString("website"), rs.getString("job_profile"), rs.getString("skills_required"), rs.getString("password"));
+                 employer_list.add(employer);
+                }
+                session.setAttribute("employer_list", employer_list);
+                
+           } catch (SQLException ex) {
+               Logger.getLogger(OpeningsServlet.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           
        }
        else
        {
-           ConnectionPool pool=ConnectionPool.getInstance();
-        Connection connection = pool.getConnection();
-        
-        String query = "select * from employee where email=? ";
+           //list all openings
+           String query = "select *  from employer";
            try {
-               PreparedStatement ps=connection.prepareStatement(query);
-               ps.setString(1, email);
-               ResultSet rs = ps.executeQuery();
-               if(!rs.isBeforeFirst())
-               {
-                   query="INSERT INTO employee (name,email,dob,college,password,resume)"
-                           +"VALUES (?,?,?,?,?,?)";
-                   ps=connection.prepareStatement(query);
-                   ps.setString(1,name);
-                   ps.setString(2,email);
-                   ps.setString(3,dob);
-                   ps.setString(4,college);
-                   ps.setString(5,pass);
-                   ps.setString(6,resume);
-                   ps.executeUpdate();
-                   url="/EmployeeProfile";
-                   Employee emp = new Employee( name, dob, college,  email, pass ,resume);
-                   HttpSession session= request.getSession();
-                   session.setAttribute("emp", emp);
-               }
-               else
-               {
-                   message = "User with this email already exist !";
-               }
+               PreparedStatement ps= connection.prepareStatement(query);
+               ResultSet rs= ps.executeQuery();
+               List<Employer> employer_list= new ArrayList<Employer>();
+                while(rs.next())
+                {
+                 Employer employer = new  Employer(rs.getInt("id"), rs.getString("name"), rs.getString("company_name"), rs.getString("email"), rs.getString("website"), rs.getString("job_profile"), rs.getString("skills_required"), rs.getString("password"));
+                 employer_list.add(employer);
+                }
+                session.setAttribute("employer_list", employer_list);
            } catch (SQLException ex) {
-               Logger.getLogger(RegistrationEmployee.class.getName()).log(Level.SEVERE, null, ex);
+               Logger.getLogger(OpeningsServlet.class.getName()).log(Level.SEVERE, null, ex);
            }
-         
-         request.setAttribute("message", message);
-        
            
-        pool.freeConnection(connection);
        }
        
-      
-      
-       getServletContext()
+       pool.freeConnection(connection);
+        getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
-        
+       
+       
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -14,21 +14,43 @@ import java.io.Serializable;
  * @author nilesh rathi
  */
 public class Employee implements Serializable {
+    private int id;
     private String name;
     private String dob;
-    private String college;
+     private String college;
     private String email;
     private String resume;
     private String password;
-    
-    public Employee(String name, String dob, String college, String email, String password, String resume) {
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Employee(int id, String name, String dob, String college, String email, String resume, String password) {
+        this.id = id;
         this.name = name;
         this.dob = dob;
         this.college = college;
         this.email = email;
+        this.resume = resume;
         this.password = password;
-        this.resume=resume;
     }
+
+    public Employee(String name, String dob, String college, String email, String resume, String password) {
+        this.name = name;
+        this.dob = dob;
+        this.college = college;
+        this.email = email;
+        this.resume = resume;
+        this.password = password;
+    }
+   
+    
+   
     
 
     public Employee() {

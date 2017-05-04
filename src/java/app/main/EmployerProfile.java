@@ -5,8 +5,8 @@
  */
 package app.main;
 
-import app.buisness.Employee;
-import app.buisness.EmployeeStatus;
+import app.buisness.ApplicationStatus;
+import app.buisness.Employer;
 import app.data.ConnectionPool;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author nilesh rathi
  */
-public class EmployeeProfile extends HttpServlet {
+public class EmployerProfile extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,40 +41,39 @@ public class EmployeeProfile extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Employee emp = (Employee)session.getAttribute("emp");
-        int sid=emp.getId();
-        String url="/index.html";
+         HttpSession session = request.getSession();
+        Employer employer = (Employer)session.getAttribute("employer");
+        
+        String url="/registration.jsp";
         ConnectionPool pool=ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
-        
-        String query ="select employer.company_name , status.status from employer , status where status.emp_id = ? and status.cmp_id=employer.id ";
-        System.out.println("Employee profile me yaha tak.....");
-        System.out.println("Employee Email = " +emp.getEmail()+ " Employee Id= "+ emp.getId());
+      
+        String qry ="select employee.id, employee.name,employee.college,employee.resume ,status.status from employee , status  where status.cmp_id = ? and status.emp_id=employee.id ";
         try {
-            PreparedStatement ps= connection.prepareStatement(query);
-            ps.setInt(1,emp.getId());
-            ResultSet rs= ps.executeQuery();
-            List<EmployeeStatus> empStatList= new ArrayList<EmployeeStatus>();
-            while(rs.next())
-            {
-                EmployeeStatus empStat = new EmployeeStatus();
-                empStat.setCompanyName(rs.getString("company_name"));
-                empStat.setStatus(rs.getString("status"));
-                empStatList.add(empStat);
-            } 
-            session.setAttribute("empStatList", empStatList);
-            url="/employeeprofile.jsp";
+            PreparedStatement ps= connection.prepareStatement(qry);
+           
+             ps.setInt(1,employer.getId());
+             
+              ResultSet rs= ps.executeQuery();
+                List<ApplicationStatus> applicantList = new ArrayList<ApplicationStatus>();
+             while(rs.next())
+             {
+                 ApplicationStatus ap = new ApplicationStatus(rs.getInt("id"),rs.getString("name"),rs.getString("college"), rs.getString("resume"), rs.getString("status"));
+                 applicantList.add(ap);
+             }
+             session.setAttribute("applicantList", applicantList);
             
-        } catch (SQLException ex) {
-            Logger.getLogger(EmployeeProfile.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            url="/employerProfile.jsp";
               
-           pool.freeConnection(connection);
-         getServletContext()
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployerProfile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+         pool.freeConnection(connection);
+        getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
-       
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

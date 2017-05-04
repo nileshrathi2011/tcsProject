@@ -5,7 +5,9 @@
  */
 package app.main;
 
+import app.buisness.ApplicationStatus;
 import app.buisness.Employee;
+import app.buisness.Employer;
 import app.data.ConnectionPool;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,6 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -69,13 +73,14 @@ public class LoginServlet extends HttpServlet {
         String name=request.getParameter("username");
         String password=request.getParameter("password");
         String checkbox=request.getParameter("employerLogin");
+        String message="";
         name=name.trim();
         
         System.out.println("name: "+name);
         System.out.println("password: "+ password);  
         System.out.println("checkbox: "+ checkbox );  
         
-        String url="/index.html";
+        String url="/index.jsp";
         
         //yaha par connection pool lekar database se data uthaunga
         
@@ -106,16 +111,25 @@ public class LoginServlet extends HttpServlet {
             
             if(password.trim().equals(pass))
         {
-            Employee emp= new Employee(rs.getString("name"), rs.getString("dob"),rs.getString("college"), rs.getString("email"), rs.getString("password"), rs.getString("resume"));
+            Employee emp= new Employee(rs.getInt("id"),rs.getString("name"), rs.getString("dob"),rs.getString("college"), rs.getString("email"), rs.getString("resume"), rs.getString("password"));
             System.out.println("yaha par pochch gaya");
             HttpSession session = request.getSession();
             
             session.setAttribute("emp", emp);
-            url="/employeeprofile.jsp";
+            url="/EmployeeProfile";
         }
+            else
+            {
+                message="Invalid Credentials";
+                request.setAttribute("message",message);
+                url="/index.jsp";
+            }
+            
             
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            message="Invalid Credentials";
+             request.setAttribute("message",message);
         }
             
         }
@@ -123,6 +137,40 @@ public class LoginServlet extends HttpServlet {
         else
         {
             // employer login
+            String query="SELECT * FROM employer WHERE email = ?";
+           
+            try {
+              PreparedStatement ps = connection.prepareStatement(query);
+              ps.setString(1,name);
+              ResultSet rs= ps.executeQuery();
+              rs.first();
+               pass = rs.getString("password");
+               
+               if(password.trim().equals(pass))
+        {
+            Employer employer= new Employer(rs.getInt("id"),rs.getString("name"),rs.getString("company_name") , rs.getString("email"), rs.getString("website"), rs.getString("job_profile"),rs.getString("skills_required"), rs.getString("password")) ;
+            
+            
+            HttpSession session = request.getSession();
+            
+            session.setAttribute("employer", employer);
+            url="/EmployerProfile";
+            //showing application status
+            
+
+        }
+            else
+            {
+                message="Invalid Credentials";
+                request.setAttribute("message",message);
+                url = "/index.jsp";
+            }
+              
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           
+           
         }
         
         

@@ -6,7 +6,7 @@
 package app.main;
 
 import app.buisness.Employee;
-import app.buisness.EmployeeStatus;
+import app.buisness.Employer;
 import app.data.ConnectionPool;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author nilesh rathi
  */
-public class EmployeeProfile extends HttpServlet {
+public class AdminProfile extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,40 +41,47 @@ public class EmployeeProfile extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Employee emp = (Employee)session.getAttribute("emp");
-        int sid=emp.getId();
-        String url="/index.html";
+        HttpSession session  = request.getSession();
+        String url="/adminProfile.jsp";
         ConnectionPool pool=ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
-        
-        String query ="select employer.company_name , status.status from employer , status where status.emp_id = ? and status.cmp_id=employer.id ";
-        System.out.println("Employee profile me yaha tak.....");
-        System.out.println("Employee Email = " +emp.getEmail()+ " Employee Id= "+ emp.getId());
+        String query1="select * from employee";
         try {
-            PreparedStatement ps= connection.prepareStatement(query);
-            ps.setInt(1,emp.getId());
+            PreparedStatement ps= connection.prepareStatement(query1);
             ResultSet rs= ps.executeQuery();
-            List<EmployeeStatus> empStatList= new ArrayList<EmployeeStatus>();
+            List<Employee> employeeList = new ArrayList<Employee>();
             while(rs.next())
             {
-                EmployeeStatus empStat = new EmployeeStatus();
-                empStat.setCompanyName(rs.getString("company_name"));
-                empStat.setStatus(rs.getString("status"));
-                empStatList.add(empStat);
-            } 
-            session.setAttribute("empStatList", empStatList);
-            url="/employeeprofile.jsp";
+                Employee employee = new Employee(rs.getInt("id"), rs.getString("name"),rs.getString("dob"),rs.getString("college") ,rs.getString("email"), rs.getString("resume"), rs.getString("password"));
+                employeeList.add(employee);
+            }
+            session.setAttribute("employeeList", employeeList);
             
         } catch (SQLException ex) {
-            Logger.getLogger(EmployeeProfile.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminProfile.class.getName()).log(Level.SEVERE, null, ex);
         }
-              
-           pool.freeConnection(connection);
-         getServletContext()
+        
+        String query2="select * from employer";
+        try {
+            PreparedStatement ps2= connection.prepareStatement(query2);
+            ResultSet rs2= ps2.executeQuery();
+            List<Employer> employerList = new ArrayList<Employer>();
+            while(rs2.next())
+            {
+                Employer employer = new Employer(rs2.getInt("id"), rs2.getString("name"), rs2.getString("company_name"), rs2.getString("email"), rs2.getString("website"), rs2.getString("job_profile"), rs2.getString("skills_required"), rs2.getString("password"));
+                employerList.add(employer);
+            }
+            session.setAttribute("employerList", employerList);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminProfile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        pool.freeConnection(connection);
+        getServletContext()
                 .getRequestDispatcher(url)
                 .forward(request, response);
-       
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
