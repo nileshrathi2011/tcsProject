@@ -61,7 +61,7 @@
             <h3>Name: <small>${employer.name}</small></h3>
             <h3>Comapny Name: <small>${employer.company}</small></h3>
             <h3>Job Profile: <small>${employer.profile}</small></h3>
-            <h3>Skills: <small>${employer.skills}</small></h3>
+            <h3>Skills: <small style = "white-space:PRE" >${employer.skills}</small>
             <h3>Company Website: <small>${employer.website}</small></h3>
             <h3>E-mail: <small>${employer.email}</small></h3>
             

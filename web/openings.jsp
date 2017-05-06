@@ -72,7 +72,7 @@
               <tr>
                 <td><h4><c:out value="${employer.company}" /></h4></td>
                 <td><h4><c:out value="${employer.profile}" /></h4></td>
-                <td><h4><c:out value="${employer.skills}" /></h4></td>
+                <td><h4 style = "white-space:PRE" ><c:out value="${employer.skills}" /></h4></td>
                 <td><h4><c:out value="${employer.website}" /></h4></td>
                         <td><form action="ApplyForPosition" method="get">
                                <input type="hidden" name="employerId" value="${employer.id}" />

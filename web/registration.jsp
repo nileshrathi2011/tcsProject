@@ -45,31 +45,31 @@
   <form method="post" action="RegistrationEmployee">
     <div class="form-group">
 	<label for="name">Nam:</label>
-        <input type="name" class="form-control" value=${emp.name} name="name" placeholder="Name">
+        <input type="name" class="form-control"  name="name" placeholder="Name">
     </div>
 	 <div class="form-group">
 	<label for="dob">DOB:</label>
-      <input type="dob" class="form-control" name="dob" value=${emp.dob} placeholder="DD/MM/YYYY">
+      <input type="dob" class="form-control" name="dob"  placeholder="DD/MM/YYYY">
     </div>
 	<div class="form-group">
 	<label for="college name">College Name:</label>
-      <input type="name" class="form-control" name="clgname" value=${emp.college} placeholder="College Name">
+      <input type="name" class="form-control" name="clgname"  placeholder="College Name">
     </div>
     <div class="form-group">
 	<label for="email">Email:</label>
-        <input type="email" class="form-control" name="email" value=${emp.email} placeholder="Enter email">
+        <input type="email" class="form-control" name="email"  placeholder="Enter email">
     </div>
     <div class="form-group">
       <label for="pwd">Password:</label>
-      <input type="password" class="form-control" name="pwd" value=${emp.password} placeholder="Enter password">
+      <input type="password" class="form-control" name="pwd"  placeholder="Enter password">
     </div>
 	<div class="form-group">
       <label for="pwd">Confirm Password:</label>
-      <input type="password" class="form-control" name="cnfpwd" value=${emp.password} placeholder="Confirm password">
+      <input type="password" class="form-control" name="cnfpwd"  placeholder="Confirm password">
     </div>
 	<div class="form-group">
       <label for="resume">Upload Resume:</label>
-      <input type="url" class="form-control" name="upldrsm" value=${emp.resume} placeholder="Upload Resume">
+      <input type="url" class="form-control" name="upldrsm"  placeholder="Upload Resume">
     </div>
     <button type="submit" class="btn btn-success">Submit</button>
   </form>
