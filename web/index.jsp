@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="height: 100%">
 <head>
  <meta charset="utf-8">
  <link rel="stylesheet" type="text/css" href="styles/main.css">
@@ -8,7 +8,12 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<title>Job Portal</title>
 </head>
-<body>
+
+
+<body style="height: 100%">
+
+<div class="background-image" style="height: 100%" > </div>
+<div class="conten" style="height: 100%">
 
 <div class="header">
 <nav class="navbar navbar-default">
@@ -40,7 +45,7 @@
 
 <div class="row">
   <div class="col-sm-8 content">
-  <h1> A heading Of Title</h1>
+  <h1>Get A job!</h1>
   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
   tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
   quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -98,6 +103,7 @@
  </div>
 
 <div id="fade" class="black_overlay"></div>
+</div>
 
 </body>
 </html>
